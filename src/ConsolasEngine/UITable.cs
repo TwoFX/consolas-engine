@@ -9,6 +9,7 @@ namespace ConsolasEngine
     public class UITable : IRenderable
     {
         private string[][] unrenderedContents;
+        private string[] lastRendered;
         private int height;
         private int width;
         private bool hasChanged;
@@ -43,27 +44,32 @@ namespace ConsolasEngine
 
         public string[] RenderAndReturn()
         {
-            string[] renderedContents = new string[height];
-            for (int i = 0; i < height; i++)
+            if (hasChanged)
             {
-                char[] builder = new char[width];
-                for (int j = 0; j < 2; j++)
+                string[] renderedContents = new string[height];
+                for (int i = 0; i < height; i++)
                 {
-                    for (int k = 0; k < unrenderedContents[i][j].Length; k++)
+                    char[] builder = new char[width];
+                    for (int j = 0; j < 2; j++)
                     {
-                        if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= width)
-                            throw new UIException("Column length sum exceeded table width");
-                        builder[j == 0 ? k : width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
+                        for (int k = 0; k < unrenderedContents[i][j].Length; k++)
+                        {
+                            if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= width)
+                                throw new UIException("Column length sum exceeded table width");
+                            builder[j == 0 ? k : width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
+                        }
+                    }
+                    renderedContents[i] = "";
+                    for (int l = 0; l < width; l++)
+                    {
+                        renderedContents[i] += builder[l];
                     }
                 }
-                renderedContents[i] = "";
-                for (int l = 0; l < width; l++)
-                {
-                    renderedContents[i] += builder[l];
-                }
+                hasChanged = false;
+                lastRendered = renderedContents;
+                return renderedContents;
             }
-            hasChanged = false;
-            return renderedContents;
+            return lastRendered;
         }
     }
 }

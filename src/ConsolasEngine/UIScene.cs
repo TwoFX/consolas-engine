@@ -9,6 +9,7 @@ namespace ConsolasEngine
     public class UIScene : IRenderable
     {
         private IRenderable[] unrenderedContents;
+        private string[] lastRendered;
         private int[][] positions;
         private string[] captions;
         private int height;
@@ -52,108 +53,113 @@ namespace ConsolasEngine
 
         public string[] RenderAndReturn()
         {
-            string[] ret = new string[height];
-            char[][] builder = new char[height][];
-            List<int[]> elementPoints = new List<int[]>();
-
-            for (int i = 0; i < builder.Length; i++)
+            if (HasChanged)
             {
-                builder[i] = new char[width];
-            }
+                string[] ret = new string[height];
+                char[][] builder = new char[height][];
+                List<int[]> elementPoints = new List<int[]>();
 
-            for (int e = 0; e < unrenderedContents.Length; e++)
-            {
-                string[] renderedElement = unrenderedContents[e].RenderAndReturn();
-                for (int i = 0; i < unrenderedContents[e].Height; i++)
+                for (int i = 0; i < builder.Length; i++)
                 {
-                    for (int j = 0; j < unrenderedContents[e].Width; j++)
+                    builder[i] = new char[width];
+                }
+
+                for (int e = 0; e < unrenderedContents.Length; e++)
+                {
+                    string[] renderedElement = unrenderedContents[e].RenderAndReturn();
+                    for (int i = 0; i < unrenderedContents[e].Height; i++)
                     {
-                        int newX = positions[e][0] + i;
-                        int newY = positions[e][1] + j;
-                        builder[newX][newY] = renderedElement[i].ToCharArray()[j];
-                        elementPoints.Add(new int[] { newX, newY });
+                        for (int j = 0; j < unrenderedContents[e].Width; j++)
+                        {
+                            int newX = positions[e][0] + i;
+                            int newY = positions[e][1] + j;
+                            builder[newX][newY] = renderedElement[i].ToCharArray()[j];
+                            elementPoints.Add(new int[] { newX, newY });
+                        }
+                    }
+                    int capX = positions[e][0] - 1;
+                    for (int c = 0; c < captions[e].Length; c++)
+                    {
+                        int capY = positions[e][1] + c + 1;
+                        builder[capX][capY] = captions[e].ToCharArray()[c];
+                        elementPoints.Add(new int[] { capX, capY });
                     }
                 }
-                int capX = positions[e][0] - 1;
-                for (int c = 0; c < captions[e].Length; c++)
-                {
-                    int capY = positions[e][1] + c + 1;
-                    builder[capX][capY] = captions[e].ToCharArray()[c];
-                    elementPoints.Add(new int[] { capX, capY });
-                }
-            }
 
-            SequenceEqualityComparer<int> secint = new SequenceEqualityComparer<int>();
+                SequenceEqualityComparer<int> secint = new SequenceEqualityComparer<int>();
 
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
+                for (int i = 0; i < height; i++)
                 {
-                    if (!(elementPoints.Contains<int[]>(new int[] { i, j }, secint)))
+                    for (int j = 0; j < width; j++)
                     {
-                        /*
-                         * 0: Top
-                         * 1: Bottom
-                         * 2: Left
-                         * 3: Right
-                         */
-                        bool[] dirs = new bool[4];
-                        int cCount = 0;
-                        bool c;
-
-                        dirs[0] = elementPoints.Contains<int[]>(new int[] { i - 1, j }, secint);
-                        dirs[1] = elementPoints.Contains<int[]>(new int[] { i + 1, j }, secint);
-                        dirs[2] = elementPoints.Contains<int[]>(new int[] { i, j - 1 }, secint);
-                        dirs[3] = elementPoints.Contains<int[]>(new int[] { i, j + 1 }, secint);
-
-                        if (i == 0)
+                        if (!(elementPoints.Contains<int[]>(new int[] { i, j }, secint)))
                         {
-                            dirs[0] = true;
-                            cCount++;
+                            /*
+                             * 0: Top
+                             * 1: Bottom
+                             * 2: Left
+                             * 3: Right
+                             */
+                            bool[] dirs = new bool[4];
+                            int cCount = 0;
+                            bool c;
+
+                            dirs[0] = elementPoints.Contains<int[]>(new int[] { i - 1, j }, secint);
+                            dirs[1] = elementPoints.Contains<int[]>(new int[] { i + 1, j }, secint);
+                            dirs[2] = elementPoints.Contains<int[]>(new int[] { i, j - 1 }, secint);
+                            dirs[3] = elementPoints.Contains<int[]>(new int[] { i, j + 1 }, secint);
+
+                            if (i == 0)
+                            {
+                                dirs[0] = true;
+                                cCount++;
+                            }
+
+                            if (j == 0)
+                            {
+                                dirs[2] = true;
+                                cCount++;
+                            }
+
+                            if (i == height - 1)
+                            {
+                                dirs[1] = true;
+                                cCount++;
+                            }
+
+                            if (j == width - 1)
+                            {
+                                dirs[3] = true;
+                                cCount++;
+                            }
+
+                            c = cCount == 2;
+
+                            if (dirs.Count(x => x) < 2 || c)
+                                builder[i][j] = 'O';
+                            else if (dirs[0] && dirs[1])
+                                builder[i][j] = '=';
+                            else if (dirs[2] && dirs[3])
+                                builder[i][j] = '|';
+                            else if (dirs[0] || dirs[1])
+                                builder[i][j] = '=';
+                            else if (dirs[2] || dirs[3])
+                                builder[i][j] = '|';
                         }
-
-                        if (j == 0)
-                        {
-                            dirs[2] = true;
-                            cCount++;
-                        }
-
-                        if (i == height - 1)
-                        {
-                            dirs[1] = true;
-                            cCount++;
-                        }
-
-                        if (j == width - 1)
-                        {
-                            dirs[3] = true;
-                            cCount++;
-                        }
-
-                        c = cCount == 2;
-
-                        if (dirs.Count(x => x) < 2 || c)
-                            builder[i][j] = 'O';
-                        else if (dirs[0] && dirs[1])
-                            builder[i][j] = '=';
-                        else if (dirs[2] && dirs[3])
-                            builder[i][j] = '|';
-                        else if (dirs[0] || dirs[1])
-                            builder[i][j] = '=';
-                        else if (dirs[2] || dirs[3])
-                            builder[i][j] = '|';
                     }
                 }
-            }
 
-            for (int i = 0; i < builder.Length; i++)
-            {
-                foreach (char chr in builder[i])
+                for (int i = 0; i < builder.Length; i++)
                 {
-                    ret[i] += chr;
+                    foreach (char chr in builder[i])
+                    {
+                        ret[i] += chr;
+                    }
                 }
+                lastRendered = ret;
+                return ret;
             }
-            return ret;
+            return lastRendered;
         }
     }
 }
