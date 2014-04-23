@@ -38,12 +38,8 @@ namespace ConsolasEngine
 
         private void validateLength(string[] contents)
         {
-            bool lengthFail = false;
-            foreach (string item in contents)
-            {
-                if (item.Length > width) lengthFail = true;
-            }
-            if (lengthFail) throw new UIException("The length of the UI data does not match to the UIElement's parameters");
+            if (contents.Any(line => line.Length != width))
+                throw new UIException("The length of the UI data does not match to the UIElement's parameters");
         }
 
         public string[] RenderAndReturn()

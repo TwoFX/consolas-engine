@@ -13,7 +13,6 @@ namespace ConsolasEngineTests
         {
             UIScene currentElement;
             UITable myElement, myOtherElement, ThirdElement;
-            UIElement uiMap;
 
             myElement = new UITable(new string[][] {new string[] {
                 "Name", "Markus"},

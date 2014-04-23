@@ -17,14 +17,7 @@ namespace ConsolasEngine
 
         public bool HasChanged
         {
-            get
-            {
-                bool ret = false;
-                foreach (IRenderable item in unrenderedContents)
-                    if (item.HasChanged == true)
-                        ret = true;
-                return ret;
-            }
+            get { return unrenderedContents.Any(item => item.HasChanged); }
         }
 
         public int Height
@@ -37,9 +30,9 @@ namespace ConsolasEngine
             get { return width; }
         }
 
-        public IRenderable GetContents(int index)
+        public IRenderable this[int index]
         {
-            return unrenderedContents[index];
+            get { return unrenderedContents[index]; }
         }
 
         public UIScene(IRenderable[] contents, int[][] positions, string[] captions, int height, int width)
@@ -56,110 +49,72 @@ namespace ConsolasEngine
             if (HasChanged)
             {
                 string[] ret = new string[height];
-                char[][] builder = new char[height][];
+                char?[][] builder = new char?[height][];
                 List<int[]> elementPoints = new List<int[]>();
 
                 for (int i = 0; i < builder.Length; i++)
                 {
-                    builder[i] = new char[width];
+                    builder[i] = new char?[width];
                 }
 
-                for (int e = 0; e < unrenderedContents.Length; e++)
+                for (int element = 0; element < unrenderedContents.Length; element++)
                 {
-                    string[] renderedElement = unrenderedContents[e].RenderAndReturn();
-                    for (int i = 0; i < unrenderedContents[e].Height; i++)
-                    {
-                        for (int j = 0; j < unrenderedContents[e].Width; j++)
-                        {
-                            int newX = positions[e][0] + i;
-                            int newY = positions[e][1] + j;
-                            builder[newX][newY] = renderedElement[i].ToCharArray()[j];
-                            elementPoints.Add(new int[] { newX, newY });
-                        }
-                    }
-                    int capX = positions[e][0] - 1;
-                    for (int c = 0; c < captions[e].Length; c++)
-                    {
-                        int capY = positions[e][1] + c + 1;
-                        builder[capX][capY] = captions[e].ToCharArray()[c];
-                        elementPoints.Add(new int[] { capX, capY });
-                    }
+                    char?[][] renderedElement = unrenderedContents[element].RenderAndReturn().Select(str => str.ToCharArray().Select(c => (char?)c).ToArray()).ToArray();
+                    insertInto<char?>(builder, renderedElement, positions[element][0], positions[element][1]);
                 }
 
-                SequenceEqualityComparer<int> secint = new SequenceEqualityComparer<int>();
+                char[][] filled = fillBorders(builder);
 
-                for (int i = 0; i < height; i++)
+                for (int i = 0; i < filled.Length; i++)
                 {
-                    for (int j = 0; j < width; j++)
-                    {
-                        if (!(elementPoints.Contains<int[]>(new int[] { i, j }, secint)))
-                        {
-                            /*
-                             * 0: Top
-                             * 1: Bottom
-                             * 2: Left
-                             * 3: Right
-                             */
-                            bool[] dirs = new bool[4];
-                            int cCount = 0;
-                            bool c;
-
-                            dirs[0] = elementPoints.Contains<int[]>(new int[] { i - 1, j }, secint);
-                            dirs[1] = elementPoints.Contains<int[]>(new int[] { i + 1, j }, secint);
-                            dirs[2] = elementPoints.Contains<int[]>(new int[] { i, j - 1 }, secint);
-                            dirs[3] = elementPoints.Contains<int[]>(new int[] { i, j + 1 }, secint);
-
-                            if (i == 0)
-                            {
-                                dirs[0] = true;
-                                cCount++;
-                            }
-
-                            if (j == 0)
-                            {
-                                dirs[2] = true;
-                                cCount++;
-                            }
-
-                            if (i == height - 1)
-                            {
-                                dirs[1] = true;
-                                cCount++;
-                            }
-
-                            if (j == width - 1)
-                            {
-                                dirs[3] = true;
-                                cCount++;
-                            }
-
-                            c = cCount == 2;
-
-                            if (dirs.Count(x => x) < 2 || c)
-                                builder[i][j] = 'O';
-                            else if (dirs[0] && dirs[1])
-                                builder[i][j] = '=';
-                            else if (dirs[2] && dirs[3])
-                                builder[i][j] = '|';
-                            else if (dirs[0] || dirs[1])
-                                builder[i][j] = '=';
-                            else if (dirs[2] || dirs[3])
-                                builder[i][j] = '|';
-                        }
-                    }
-                }
-
-                for (int i = 0; i < builder.Length; i++)
-                {
-                    foreach (char chr in builder[i])
-                    {
-                        ret[i] += chr;
-                    }
+                    ret[i] = new string(filled[i]);
                 }
                 lastRendered = ret;
                 return ret;
             }
             return lastRendered;
+        }
+
+        private void insertInto<T>(T[][] dest, T[][] source, int fromX, int fromY)
+        {
+            for (int line = 0; line < source.Length; line++)
+            {
+                Array.Copy(source[line], 0, dest[line + fromX], fromY, source[line].Length);
+            }
+        }
+
+        private char[][] fillBorders(char?[][] scene)
+        {
+            char[][] result = new char[scene.Length][];
+            for (int x = 0; x < scene.Length; x++)
+            {
+                result[x] = new char[scene[x].Length];
+                for (int y = 0; y < scene.Length; y++)
+                {
+                    result[x][y] = scene[x][y] ?? determineBorderType(scene, x, y);
+                }
+            }
+            return result;
+        }
+
+        private char determineBorderType(char?[][] reference, int x, int y)
+        {
+            bool[] sidesFree = { x > 0 ? reference[x - 1][y] == null : false, /* Top */
+                             x < reference.Length - 1 ? reference[x + 1][y] == null : false, /* Bottom */
+                             y > 0 ? reference[x][y - 1] == null : false, /* Left */
+                             y < reference[x].Length - 1 ? reference[x][y + 1] == null : false, /* Right */ };
+
+            bool topBot = (sidesFree[0] && sidesFree[1]);
+            bool leftRight = (sidesFree[2] && sidesFree[3]);
+
+            bool opposite = topBot || leftRight;
+
+            int count = 4 - sidesFree.Count(s => s);
+
+            if (count > 2) return 'O';
+            if (count == 2) return !opposite ? 'O' : (topBot ? '|' : '=');
+            if (count == 1) return sidesFree.TakeWhile(s => !s).Count() < 2 ? '=' : '|';
+            return '#';
         }
     }
 }
