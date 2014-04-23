@@ -59,11 +59,7 @@ namespace ConsolasEngine
                             builder[j == 0 ? k : width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
                         }
                     }
-                    renderedContents[i] = "";
-                    for (int l = 0; l < width; l++)
-                    {
-                        renderedContents[i] += builder[l];
-                    }
+                    renderedContents[i] = new string(builder);
                 }
                 hasChanged = false;
                 lastRendered = renderedContents;
