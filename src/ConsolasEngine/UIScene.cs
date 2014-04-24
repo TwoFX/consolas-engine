@@ -14,6 +14,7 @@ namespace ConsolasEngine
         private string[] captions;
         private int height;
         private int width;
+        private char[][] preRendered;
 
         public bool HasChanged
         {
@@ -42,37 +43,57 @@ namespace ConsolasEngine
             this.captions = captions;
             this.height = height;
             this.width = width;
+
+            this.preRender();
         }
 
         public string[] RenderAndReturn()
         {
-            if (HasChanged)
+            if (this.HasChanged)
             {
                 string[] ret = new string[height];
-                char?[][] builder = new char?[height][];
-                List<int[]> elementPoints = new List<int[]>();
-
-                for (int i = 0; i < builder.Length; i++)
-                {
-                    builder[i] = new char?[width];
-                }
+                char[][] rendered = preRendered;
 
                 for (int element = 0; element < unrenderedContents.Length; element++)
                 {
-                    char?[][] renderedElement = unrenderedContents[element].RenderAndReturn().Select(str => str.ToCharArray().Select(c => (char?)c).ToArray()).ToArray();
-                    insertInto<char?>(builder, renderedElement, positions[element][0], positions[element][1]);
+                    if (unrenderedContents[element].HasChanged)
+                    {
+                        char[][] renderedElement = unrenderedContents[element].RenderAndReturn().Select(str => str.ToCharArray()).ToArray();
+                        insertInto<char>(rendered, renderedElement, positions[element][0], positions[element][1]);
+                    }
                 }
 
-                char[][] filled = fillBorders(builder);
-
-                for (int i = 0; i < filled.Length; i++)
+                for (int i = 0; i < rendered.Length; i++)
                 {
-                    ret[i] = new string(filled[i]);
+                    ret[i] = new string(rendered[i]);
                 }
                 lastRendered = ret;
                 return ret;
             }
             return lastRendered;
+        }
+
+        private void preRender()
+        {
+            char?[][] template = new char?[height][];
+
+            for (int i = 0; i < height; i++)
+            {
+                template[i] = new char?[width];
+            }
+
+            for (int element = 0; element < unrenderedContents.Length; element++)
+            {
+                for (int elX = positions[element][0]; elX < positions[element][0] + unrenderedContents[element].Height; elX++)
+                {
+                    for (int elY = positions[element][1]; elY < positions[element][1] + unrenderedContents[element].Width; elY++)
+                    {
+                        template[elX][elY] = default(char);
+                    }
+                }
+            }
+
+            preRendered = fillNullWithBorders(template);
         }
 
         private void insertInto<T>(T[][] dest, T[][] source, int fromX, int fromY)
@@ -83,13 +104,13 @@ namespace ConsolasEngine
             }
         }
 
-        private char[][] fillBorders(char?[][] scene)
+        private char[][] fillNullWithBorders(char?[][] scene)
         {
             char[][] result = new char[scene.Length][];
             for (int x = 0; x < scene.Length; x++)
             {
                 result[x] = new char[scene[x].Length];
-                for (int y = 0; y < scene.Length; y++)
+                for (int y = 0; y < scene[x].Length; y++)
                 {
                     result[x][y] = scene[x][y] ?? determineBorderType(scene, x, y);
                 }
@@ -109,12 +130,24 @@ namespace ConsolasEngine
 
             bool opposite = topBot || leftRight;
 
-            int count = 4 - sidesFree.Count(s => s);
+            int count = sidesFree.Count(s => s);
 
-            if (count > 2) return 'O';
-            if (count == 2) return !opposite ? 'O' : (topBot ? '|' : '=');
-            if (count == 1) return sidesFree.TakeWhile(s => !s).Count() < 2 ? '=' : '|';
-            return '#';
+            // Free space
+            if (count == 4) return '#';
+
+            // Large intersection
+            if (count > 2) return '0';
+
+            // Either two oppsoite walls or a corner
+            if (count == 2) return !opposite ? '0' : (topBot ? '|' : '-');
+
+            // Small hack: sides.Free.TakeWhile(s => !s).Count() returns the first index that is not true,
+            // so the first (and only) occupied side. Due to the ordering of the elements of sidesFree,
+            // if index < 2 we are below or above, and if index >= 2 we are left or right.
+            if (count == 1) return sidesFree.TakeWhile(s => !s).Count() < 2 ? '-' : '|';
+
+            // UI coordinates have to take borders into consideration.
+            throw new UIException("UI layout does not enable bordering.");
         }
     }
 }

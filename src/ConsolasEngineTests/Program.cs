@@ -40,7 +40,7 @@ namespace ConsolasEngineTests
 
             currentElement = new UIScene(new IRenderable[] { myElement, myOtherElement, ThirdElement },
                 new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 } },
-                new string[] { "Spieler 1", "Spieler 2", "OMG Gegner" }, 36, 63);
+                new string[] { "Spieler 1", "Spieler 2", "OMG Gegner" }, 15, 63);
 
             UIManager.setScene(currentElement);
 

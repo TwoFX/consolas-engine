@@ -50,6 +50,10 @@ namespace ConsolasEngine
                 for (int i = 0; i < height; i++)
                 {
                     char[] builder = new char[width];
+                    for (int sp = 0; sp < width; sp++)
+                    {
+                        builder[sp] = ' ';
+                    }
                     for (int j = 0; j < 2; j++)
                     {
                         for (int k = 0; k < unrenderedContents[i][j].Length; k++)
