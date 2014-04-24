@@ -142,22 +142,30 @@ namespace ConsolasEngine
 
             int count = sidesFree.Count(s => s);
 
-            // Free space
-            if (count == 4) return '#';
+            switch (count)
+            {
+                case 4:
+                    // Free space
+                    return '#';
 
-            // Large intersection
-            if (count > 2) return '0';
+                case 3:
+                    // Large intersection
+                    return '0';
 
-            // Either two oppsoite walls or a corner
-            if (count == 2) return !opposite ? '0' : (topBot ? '|' : '-');
+                case 2:
+                    // Either two oppsoite walls or a corner
+                    return !opposite ? '0' : (topBot ? '|' : '-');
 
-            // Small hack: sides.Free.TakeWhile(s => !s).Count() returns the first index that is not true,
-            // so the first (and only) occupied side. Due to the ordering of the elements of sidesFree,
-            // if index < 2 we are below or above, and if index >= 2 we are left or right.
-            if (count == 1) return sidesFree.TakeWhile(s => !s).Count() < 2 ? '-' : '|';
+                case 1:
+                    // Small hack: sides.Free.TakeWhile(s => !s).Count() returns the first index that is not true,
+                    // so the first (and only) occupied side. Due to the ordering of the elements of sidesFree,
+                    // if index < 2 we are below or above, and if index >= 2 we are left or right.
+                    return sidesFree.TakeWhile(s => !s).Count() < 2 ? '-' : '|';
 
-            // UI coordinates have to take borders into consideration.
-            throw new UIException("UI layout does not enable bordering.");
+                default:
+                    // UI coordinates have to take borders into consideration.
+                    throw new UIException("UI layout does not enable bordering.");
+            }
         }
     }
 }
