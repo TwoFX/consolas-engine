@@ -75,13 +75,14 @@ namespace ConsolasEngine
 
         private void preRender()
         {
+            // Initialize
             char?[][] template = new char?[height][];
-
             for (int i = 0; i < height; i++)
             {
                 template[i] = new char?[width];
             }
 
+            // Fill all places where there will be something later with somethigs that is not null
             for (int element = 0; element < unrenderedContents.Length; element++)
             {
                 for (int elX = positions[element][0]; elX < positions[element][0] + unrenderedContents[element].Height; elX++)
@@ -94,6 +95,15 @@ namespace ConsolasEngine
             }
 
             preRendered = fillNullWithBorders(template);
+
+            // Captions
+            for (int element = 0; element < unrenderedContents.Length; element++)
+            {
+                if (captions[element].Length <= unrenderedContents[element].Width - 2)
+                {
+                    insertInto(preRendered, new char[][] { captions[element].ToCharArray() }, positions[element][0] - 1, positions[element][1] + 1);
+                }
+            }
         }
 
         private void insertInto<T>(T[][] dest, T[][] source, int fromX, int fromY)
