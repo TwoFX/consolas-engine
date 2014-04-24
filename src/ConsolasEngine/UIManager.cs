@@ -8,7 +8,6 @@ namespace ConsolasEngine
 {
     public static class UIManager
     {
-        static private System.Timers.Timer frames = new System.Timers.Timer(500);
         static private UIScene currentElement;
         static private string[] renderedScreen;
 
@@ -24,7 +23,7 @@ namespace ConsolasEngine
             }
             else
             {
-                currentElement = new UIScene(new IRenderable[] { newScene }, new int[][] { new int[] { 0, 0 } }, new string[] { "" }, newScene.Height, newScene.Width);
+                currentElement = new UIScene(new IRenderable[] { newScene }, new int[][] { new int[] { 1, 1 } }, new string[] { "" }, newScene.Height + 2, newScene.Width + 2);
             }
             Console.WindowWidth = currentElement.Width;
             Console.WindowHeight = currentElement.Height + 1;
