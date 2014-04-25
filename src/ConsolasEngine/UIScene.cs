@@ -135,8 +135,8 @@ namespace ConsolasEngine
                              y > 0 ? reference[x][y - 1] == null : false, /* Left */
                              y < reference[x].Length - 1 ? reference[x][y + 1] == null : false, /* Right */ };
 
-            bool topBot = (sidesFree[0] && sidesFree[1]);
-            bool leftRight = (sidesFree[2] && sidesFree[3]);
+            bool topBot = sidesFree[0] && sidesFree[1];
+            bool leftRight = sidesFree[2] && sidesFree[3];
 
             bool opposite = topBot || leftRight;
 
@@ -144,17 +144,9 @@ namespace ConsolasEngine
 
             switch (count)
             {
-                case 4:
-                    // Free space
-                    return '#';
-
-                case 3:
-                    // Large intersection
-                    return '0';
-
-                case 2:
-                    // Either two oppsoite walls or a corner
-                    return !opposite ? '0' : (topBot ? '|' : '-');
+                case 0:
+                    // UI coordinates have to take borders into consideration.
+                    throw new UIException("UI layout does not enable bordering.");
 
                 case 1:
                     // Small hack: sides.Free.TakeWhile(s => !s).Count() returns the first index that is not true,
@@ -162,9 +154,13 @@ namespace ConsolasEngine
                     // if index < 2 we are below or above, and if index >= 2 we are left or right.
                     return sidesFree.TakeWhile(s => !s).Count() < 2 ? '-' : '|';
 
+                case 2:
+                    // Either two oppsoite walls or a corner
+                    return !opposite ? '0' : (topBot ? '|' : '-');
+
                 default:
-                    // UI coordinates have to take borders into consideration.
-                    throw new UIException("UI layout does not enable bordering.");
+                    // Large intersection
+                    return '0';
             }
         }
     }
