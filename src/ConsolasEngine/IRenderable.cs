@@ -23,6 +23,6 @@ namespace ConsolasEngine
             get;
         }
 
-        string[] RenderAndReturn();
+        RenderedField Render();
     }
 }
