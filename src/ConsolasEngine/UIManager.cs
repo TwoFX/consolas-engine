@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ namespace ConsolasEngine
     public static class UIManager
     {
         static private UIScene currentElement;
-        static private string[] renderedScreen;
+        static private char[][] symbols;
+        static private ArrayList[] switches;
 
         public static void Initialize()
         {
@@ -38,14 +40,46 @@ namespace ConsolasEngine
 
         public static void Render()
         {
-            renderedScreen = currentElement.RenderAndReturn();
+            Canvas rendered = currentElement.Render();
+            symbols = rendered.Symbols;
+            switches = processSwitches(rendered.Colors);
+        }
+
+        private static ArrayList[] processSwitches(ConsoleColor[][] map)
+        {
+            var sw = new ArrayList[map.Length];
+            for (int line = 0; line < map.Length; line++)
+            {
+                IEnumerable<ConsoleColor> working = map[line];
+                int sCount = map[line].Length;
+                while (working.Any())
+                {
+                    int atIndex = sCount - working.Count();
+                    sw[line].Add(atIndex);
+                    sw[line].Add(map[line][atIndex]);
+                    working = working.SkipWhile(clr => clr == map[line][atIndex]);
+                }
+                sw[line].Add(map[line].Length);
+            }
+            return sw;
         }
 
         public static void DrawFrame()
         {
             Console.Clear();
-            foreach (string line in renderedScreen)
-                Console.WriteLine(line);
+            foreach (var switchLine in switches)
+            {
+                for (int ind = 0; ind < switchLine.Count; ind += 2)
+                {
+                    Console.ForegroundColor = (ConsoleColor)switchLine[ind + 1];
+                    int start = (int)switchLine[ind];
+                    int end = (int)switchLine[ind + 2];
+                    char[] p = new char[end - start];
+                    Array.Copy(symbols, start, p, 0, end - start);
+                    Console.Write(p);
+                }
+                Console.WriteLine();
+            }
         }
     }
 }

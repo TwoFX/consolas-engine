@@ -9,7 +9,7 @@ namespace ConsolasEngine
     public class UIScene : IRenderable
     {
         private IRenderable[] unrenderedContents;
-        private string[] lastRendered;
+        private Canvas lastRendered;
         private int[][] positions;
         private string[] captions;
         private int height;
@@ -47,28 +47,21 @@ namespace ConsolasEngine
             this.preRender();
         }
 
-        public string[] RenderAndReturn()
+        public Canvas Render()
         {
             if (this.HasChanged)
             {
-                string[] ret = new string[height];
-                char[][] rendered = preRendered;
-
+                Canvas rendered = lastRendered;
                 for (int element = 0; element < unrenderedContents.Length; element++)
                 {
                     if (unrenderedContents[element].HasChanged)
                     {
-                        char[][] renderedElement = unrenderedContents[element].RenderAndReturn().Select(str => str.ToCharArray()).ToArray();
-                        insertInto<char>(rendered, renderedElement, positions[element][0], positions[element][1]);
+                        Canvas renderedElement = unrenderedContents[element].Render();
+                        insertInto<char>(rendered.Symbols, renderedElement.Symbols, positions[element][0], positions[element][1]);
+                        insertInto<ConsoleColor>(rendered.Colors, renderedElement.Colors, positions[element][0], positions[element][1]);
                     }
                 }
-
-                for (int i = 0; i < rendered.Length; i++)
-                {
-                    ret[i] = new string(rendered[i]);
-                }
-                lastRendered = ret;
-                return ret;
+                lastRendered = rendered;
             }
             return lastRendered;
         }

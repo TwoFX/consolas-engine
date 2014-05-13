@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace ConsolasEngine
 {
-    public class RenderedField
+    public class Canvas
     {
         public char[][] Symbols
         {
             get;
-            private set;
+            set;
         }
 
         public ConsoleColor[][] Colors
         {
             get;
-            private set;
+            set;
         }
 
         public int Height
@@ -32,7 +32,7 @@ namespace ConsolasEngine
             private set;
         }
 
-        public RenderedField(char[][] symbols, ConsoleColor[][] colors)
+        public Canvas(char[][] symbols, ConsoleColor[][] colors)
         {
             this.Height = symbols.Length;
             this.Width = symbols[0].Length;
@@ -44,6 +44,22 @@ namespace ConsolasEngine
                 colors.Any(row => row.Length != this.Width))
             {
                 throw new ArgumentOutOfRangeException("Input dimensions do not match.");
+            }
+        }
+
+        public Canvas(int height, int width)
+        {
+            this.Height = height;
+            this.Width = width;
+
+            this.Symbols = new char[this.Height][];
+            this.Colors = new ConsoleColor[this.Height][];
+
+
+            for (int line = 0; line < height; line++)
+            {
+                this.Symbols[line] = new char[this.Width];
+                this.Colors[line] = new ConsoleColor[this.Width];
             }
         }
     }
