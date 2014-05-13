@@ -8,8 +8,7 @@ namespace ConsolasEngine
 {
     public class UIElement : IRenderable
     {
-        private string[] renderedContents;
-
+        private Canvas contents;
         private int height;
         private int width;
         private bool hasChanged;
@@ -29,29 +28,22 @@ namespace ConsolasEngine
             get { return hasChanged; }
         }
 
-        public UIElement(string[] contents, int maxLength)
+        public UIElement(Canvas contents)
         {
-            height = contents.Length;
-            width = maxLength;
+            height = contents.Height;
+            width = contents.Width;
             Update(contents);
         }
 
-        private void validateLength(string[] contents)
-        {
-            if (contents.Any(line => line.Length != width))
-                throw new UIException("The length of the UI data does not match to the UIElement's parameters");
-        }
-
-        public string[] RenderAndReturn()
+        public Canvas Render()
         {
             hasChanged = false;
-            return renderedContents;
+            return contents;
         }
 
-        public void Update(string[] contents)
+        public void Update(Canvas contents)
         {
-            validateLength(contents);
-            renderedContents = contents;
+            this.contents = contents;
             hasChanged = true;
         }
     }

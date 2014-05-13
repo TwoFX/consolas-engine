@@ -9,10 +9,12 @@ namespace ConsolasEngine
     public class UITable : IRenderable
     {
         private string[][] unrenderedContents;
-        private string[] lastRendered;
+        private Canvas lastRendered;
         private int height;
         private int width;
         private bool hasChanged;
+        private ConsoleColor? textColor;
+        private ConsoleColor? headingColor;
 
         public bool HasChanged
         {
@@ -33,6 +35,7 @@ namespace ConsolasEngine
         {
             height = contents.Length;
             width = lengthSum;
+            lastRendered = new Canvas(height, width);
             Update(contents);
         }
 
@@ -42,17 +45,20 @@ namespace ConsolasEngine
             hasChanged = true;
         }
 
-        public string[] RenderAndReturn()
+        public Canvas Render()
         {
             if (hasChanged)
             {
-                string[] renderedContents = new string[height];
+                char[][] renderedContents = new char[height][];
                 for (int i = 0; i < height; i++)
                 {
-                    char[] builder = new char[width];
                     for (int sp = 0; sp < width; sp++)
                     {
-                        builder[sp] = ' ';
+                        renderedContents[i] = new char[width];
+                        renderedContents[i][sp] = ' ';
+                        lastRendered.Colors[i][sp] = i == 0 ?
+                            headingColor ?? ConsoleColor.Blue :
+                            textColor ?? ConsoleColor.Gray;
                     }
                     for (int j = 0; j < 2; j++)
                     {
@@ -60,14 +66,12 @@ namespace ConsolasEngine
                         {
                             if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= width)
                                 throw new UIException("Column length sum exceeded table width");
-                            builder[j == 0 ? k : width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
+                            renderedContents[i][j == 0 ? k : width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
                         }
                     }
-                    renderedContents[i] = new string(builder);
                 }
                 hasChanged = false;
-                lastRendered = renderedContents;
-                return renderedContents;
+                lastRendered.Symbols = renderedContents;
             }
             return lastRendered;
         }

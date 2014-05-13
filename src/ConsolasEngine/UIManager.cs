@@ -50,6 +50,7 @@ namespace ConsolasEngine
             var sw = new ArrayList[map.Length];
             for (int line = 0; line < map.Length; line++)
             {
+                sw[line] = new ArrayList();
                 IEnumerable<ConsoleColor> working = map[line];
                 int sCount = map[line].Length;
                 while (working.Any())
@@ -67,15 +68,15 @@ namespace ConsolasEngine
         public static void DrawFrame()
         {
             Console.Clear();
-            foreach (var switchLine in switches)
+            for (int line = 0; line < currentElement.Height; line++)
             {
-                for (int ind = 0; ind < switchLine.Count; ind += 2)
+                for (int ind = 0; ind < switches[line].Count - 1; ind += 2)
                 {
-                    Console.ForegroundColor = (ConsoleColor)switchLine[ind + 1];
-                    int start = (int)switchLine[ind];
-                    int end = (int)switchLine[ind + 2];
+                    Console.ForegroundColor = (ConsoleColor)switches[line][ind + 1];
+                    int start = (int)switches[line][ind];
+                    int end = (int)switches[line][ind + 2];
                     char[] p = new char[end - start];
-                    Array.Copy(symbols, start, p, 0, end - start);
+                    Array.Copy(symbols[line], start, p, 0, end - start);
                     Console.Write(p);
                 }
                 Console.WriteLine();

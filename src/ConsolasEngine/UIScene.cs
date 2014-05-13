@@ -14,7 +14,8 @@ namespace ConsolasEngine
         private string[] captions;
         private int height;
         private int width;
-        private char[][] preRendered;
+        private ConsoleColor? captionColor;
+        private ConsoleColor? borderColor;
 
         public bool HasChanged
         {
@@ -43,7 +44,7 @@ namespace ConsolasEngine
             this.captions = captions;
             this.height = height;
             this.width = width;
-
+            lastRendered = new Canvas(height, width);
             this.preRender();
         }
 
@@ -87,14 +88,25 @@ namespace ConsolasEngine
                 }
             }
 
-            preRendered = fillNullWithBorders(template);
+            for (int x = 0; x < height; x++)
+            {
+                for (int y = 0; y < width; y++)
+                {
+                    if (template[x][y] == null)
+                    {
+                        lastRendered.Colors[x][y] = borderColor ?? ConsoleColor.Red;
+                    }
+                }
+            }
+
+            lastRendered.Symbols = fillNullWithBorders(template);
 
             // Captions
             for (int element = 0; element < unrenderedContents.Length; element++)
             {
                 if (captions[element].Length <= unrenderedContents[element].Width - 2)
                 {
-                    insertInto(preRendered, new char[][] { captions[element].ToCharArray() }, positions[element][0] - 1, positions[element][1] + 1);
+                    insertInto(lastRendered.Symbols, new char[][] { captions[element].ToCharArray() }, positions[element][0] - 1, positions[element][1] + 1);
                 }
             }
         }
