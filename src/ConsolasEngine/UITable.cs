@@ -31,8 +31,45 @@ namespace ConsolasEngine
             get { return width; }
         }
 
-        public UITable(string[][] contents, int lengthSum)
+        public ConsoleColor TextColor
         {
+            get
+            {
+                return textColor ?? UIManager.DefaultColor;
+            }
+
+            set
+            {
+                textColor = value;
+            }
+        }
+        public ConsoleColor HeadingColor
+        {
+            get
+            {
+                return headingColor ?? UIManager.DefaultColor;
+            }
+
+            set
+            {
+                headingColor = value;
+            }
+        }
+
+        public void nullableSetTextColor(ConsoleColor? value)
+        {
+            textColor = value;
+        }
+
+        public void nullableSetHeadingColor(ConsoleColor? value)
+        {
+            headingColor = value;
+        }
+
+        public UITable(string[][] contents, int lengthSum, ConsoleColor? textColor = null, ConsoleColor? headingColor = null)
+        {
+            this.headingColor = headingColor;
+            this.textColor = textColor;
             height = contents.Length;
             width = lengthSum;
             lastRendered = new Canvas(height, width);
@@ -57,8 +94,8 @@ namespace ConsolasEngine
                         renderedContents[i] = new char[width];
                         renderedContents[i][sp] = ' ';
                         lastRendered.Colors[i][sp] = i == 0 ?
-                            headingColor ?? ConsoleColor.Blue :
-                            textColor ?? ConsoleColor.Gray;
+                            HeadingColor :
+                            TextColor;
                     }
                     for (int j = 0; j < 2; j++)
                     {

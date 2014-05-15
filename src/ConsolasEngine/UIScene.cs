@@ -37,13 +37,50 @@ namespace ConsolasEngine
             get { return unrenderedContents[index]; }
         }
 
-        public UIScene(IRenderable[] contents, int[][] positions, string[] captions, int height, int width)
+        public ConsoleColor CaptionColor
+        {
+            get
+            {
+                return captionColor ?? UIManager.DefaultColor;
+            }
+
+            set
+            {
+                captionColor = value;
+            }
+        }
+        public ConsoleColor BorderColor
+        {
+            get
+            {
+                return borderColor ?? UIManager.DefaultColor;
+            }
+
+            set
+            {
+                borderColor = value;
+            }
+        }
+
+        public void nullableSetCaptionColor(ConsoleColor? value)
+        {
+            captionColor = value;
+        }
+
+        public void nullableSetBorderColor(ConsoleColor? value)
+        {
+            borderColor = value;
+        }
+
+        public UIScene(IRenderable[] contents, int[][] positions, string[] captions, int height, int width, ConsoleColor? captionColor = null, ConsoleColor? borderColor = null)
         {
             unrenderedContents = contents;
             this.positions = positions;
             this.captions = captions;
             this.height = height;
             this.width = width;
+            this.captionColor = captionColor;
+            this.borderColor = borderColor;
             lastRendered = new Canvas(height, width);
             this.preRender();
         }
@@ -53,13 +90,15 @@ namespace ConsolasEngine
             if (this.HasChanged)
             {
                 Canvas rendered = lastRendered;
+
+                // Render every element that has changed since last time and insert it into the canvas
                 for (int element = 0; element < unrenderedContents.Length; element++)
                 {
                     if (unrenderedContents[element].HasChanged)
                     {
                         Canvas renderedElement = unrenderedContents[element].Render();
-                        insertInto<char>(rendered.Symbols, renderedElement.Symbols, positions[element][0], positions[element][1]);
-                        insertInto<ConsoleColor>(rendered.Colors, renderedElement.Colors, positions[element][0], positions[element][1]);
+                        Helper.Copy2D(rendered.Symbols, renderedElement.Symbols, positions[element][0], positions[element][1]);
+                        Helper.Copy2D(rendered.Colors, renderedElement.Colors, positions[element][0], positions[element][1]);
                     }
                 }
                 lastRendered = rendered;
@@ -94,7 +133,7 @@ namespace ConsolasEngine
                 {
                     if (template[x][y] == null)
                     {
-                        lastRendered.Colors[x][y] = borderColor ?? ConsoleColor.Red;
+                        lastRendered.Colors[x][y] = this.BorderColor;
                     }
                 }
             }
@@ -106,19 +145,13 @@ namespace ConsolasEngine
             {
                 if (captions[element].Length <= unrenderedContents[element].Width - 2)
                 {
-                    insertInto(lastRendered.Symbols, new char[][] { captions[element].ToCharArray() }, positions[element][0] - 1, positions[element][1] + 1);
+                    Helper.Copy2D(lastRendered.Symbols, captions[element].ToCharArray(), positions[element][0] - 1, positions[element][1] + 1);
+                    Helper.Copy2D(lastRendered.Colors, Helper.Repeat(this.CaptionColor, captions[element].Length), positions[element][0] - 1, positions[element][1] + 1);
                 }
             }
         }
 
-        private void insertInto<T>(T[][] dest, T[][] source, int fromX, int fromY)
-        {
-            for (int line = 0; line < source.Length; line++)
-            {
-                Array.Copy(source[line], 0, dest[line + fromX], fromY, source[line].Length);
-            }
-        }
-
+        // Fill all pieces of the canvas where there are no elements (value == null) with borders
         private char[][] fillNullWithBorders(char?[][] scene)
         {
             char[][] result = new char[scene.Length][];
@@ -133,6 +166,7 @@ namespace ConsolasEngine
             return result;
         }
 
+        // Analyze the surroundings of a position within the canvas and find out whether to put '0', '-' or '|'
         private char determineBorderType(char?[][] reference, int x, int y)
         {
             bool[] sidesFree = { x > 0 ? reference[x - 1][y] == null : false, /* Top */

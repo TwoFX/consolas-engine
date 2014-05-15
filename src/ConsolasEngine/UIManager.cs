@@ -12,9 +12,18 @@ namespace ConsolasEngine
         static private UIScene currentElement;
         static private char[][] symbols;
         static private ArrayList[] switches;
+        static private bool isInitialized = false;
 
-        public static void Initialize()
+        public static ConsoleColor DefaultColor
         {
+            get;
+            set;
+        }
+
+        public static void Initialize(ConsoleColor defaultColor = ConsoleColor.Gray)
+        {
+            DefaultColor = defaultColor;
+            isInitialized = true;
         }
 
         public static void setScene(IRenderable newScene)
@@ -40,6 +49,9 @@ namespace ConsolasEngine
 
         public static void Render()
         {
+            if (!isInitialized)
+                throw new InvalidOperationException("UIManager has to be initialized");
+
             Canvas rendered = currentElement.Render();
             symbols = rendered.Symbols;
             switches = processSwitches(rendered.Colors);
