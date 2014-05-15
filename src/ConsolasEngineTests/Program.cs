@@ -51,6 +51,16 @@ namespace ConsolasEngineTests
 
             Console.ReadKey();
 
+            currentElement = new UIScene(new IRenderable[] { myOtherElement, myElement, ThirdElement },
+                new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 } },
+                new string[] { "Spieler 1", "Spieler 2", "OMG Gegner" }, 15, 63, ConsoleColor.Green, null);
+
+            UIManager.setScene(currentElement);
+
+            UIManager.Render();
+            UIManager.DrawFrame();
+
+            Console.ReadKey();
         }
     }
 }

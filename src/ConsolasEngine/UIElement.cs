@@ -35,6 +35,11 @@ namespace ConsolasEngine
             Update(contents);
         }
 
+        public void Invalidate()
+        {
+            hasChanged = true;
+        }
+
         public Canvas Render()
         {
             hasChanged = false;

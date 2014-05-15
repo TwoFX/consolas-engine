@@ -83,6 +83,7 @@ namespace ConsolasEngine
             this.borderColor = borderColor;
             lastRendered = new Canvas(height, width);
             this.preRender();
+            this.Invalidate();
         }
 
         public Canvas Render()
@@ -104,6 +105,14 @@ namespace ConsolasEngine
                 lastRendered = rendered;
             }
             return lastRendered;
+        }
+
+        public void Invalidate()
+        {
+            foreach (IRenderable element in unrenderedContents)
+            {
+                element.Invalidate();
+            }
         }
 
         private void preRender()

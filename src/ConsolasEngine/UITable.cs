@@ -66,6 +66,11 @@ namespace ConsolasEngine
             headingColor = value;
         }
 
+        public void Invalidate()
+        {
+            hasChanged = true;
+        }
+
         public UITable(string[][] contents, int lengthSum, ConsoleColor? textColor = null, ConsoleColor? headingColor = null)
         {
             this.headingColor = headingColor;

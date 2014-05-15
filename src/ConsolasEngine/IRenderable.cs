@@ -24,5 +24,6 @@ namespace ConsolasEngine
         }
 
         Canvas Render();
+        void Invalidate();
     }
 }
