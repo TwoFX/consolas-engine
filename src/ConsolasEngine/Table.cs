@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsolasEngine
 {
-    public class UITable : IRenderable
+    public class Table : IRenderable
     {
         private string[][] unrenderedContents;
         private Canvas lastRendered;
@@ -71,7 +71,7 @@ namespace ConsolasEngine
             hasChanged = true;
         }
 
-        public UITable(string[][] contents, int lengthSum, ConsoleColor? textColor = null, ConsoleColor? headingColor = null)
+        public Table(string[][] contents, int lengthSum, ConsoleColor? textColor = null, ConsoleColor? headingColor = null)
         {
             this.headingColor = headingColor;
             this.textColor = textColor;

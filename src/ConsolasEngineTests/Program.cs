@@ -12,11 +12,11 @@ namespace ConsolasEngineTests
         static void Main(string[] args)
         {
             UIScene currentElement;
-            UITable myElement, myOtherElement, ThirdElement;
+            Table myElement, myOtherElement, ThirdElement;
 
             UIManager.Initialize(ConsoleColor.White);
 
-            myElement = new UITable(new string[][] {new string[] {
+            myElement = new Table(new string[][] {new string[] {
                 "Name", "Markus"},
                 new string[] {"Rasse", "Epische Epischheit"},
                 new string[] {"Staerke", "9001"},
@@ -24,7 +24,7 @@ namespace ConsolasEngineTests
                 new string[] {"Intelligenz", "asdasdasdasdasd"},
                 new string[] {"Level", "9001"}}, 30, null, ConsoleColor.Red);
 
-            myOtherElement = new UITable(new string[][] { // So sieht der Quellcode aus
+            myOtherElement = new Table(new string[][] { // So sieht der Quellcode aus
                 new string[] {"Name", "Lukas"},
                 new string[] {"Rasse", "Menschendings"},
                 new string[] {"Staerke", "0"},
@@ -32,7 +32,7 @@ namespace ConsolasEngineTests
                 new string[] {"Intelligenz", "000"},
                 new string[] {"Level", "0000"}}, 30);
 
-            ThirdElement = new UITable(new string[][] {new string[] {
+            ThirdElement = new Table(new string[][] {new string[] {
                 "Name", "Gegner sind OP"},
                 new string[] {"Rasse", "Winfestor"},
                 new string[] {"Staerke", "9002"},
