@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsolasEngine
+namespace FireworkEngine
 {
     public static class UIManager
     {

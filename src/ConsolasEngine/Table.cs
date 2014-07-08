@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsolasEngine
+namespace FireworkEngine
 {
     public enum TableMode
     {
@@ -110,9 +110,9 @@ namespace ConsolasEngine
 
                     for (int sp = 0; sp < Width; sp++)
                     {
-
                         ConsoleColor chosenColor = TextColor;
 
+                        // Decide whether a slot is part of a heading
                         switch (this.TableMode)
                         {
                             case TableMode.NoHeader:
