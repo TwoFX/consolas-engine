@@ -104,13 +104,12 @@ namespace ConsolasEngine
         {
             if (hasChanged)
             {
-                char[][] renderedContents = new char[Height][];
+
                 for (int i = 0; i < Height; i++)
                 {
+
                     for (int sp = 0; sp < Width; sp++)
                     {
-                        renderedContents[i] = new char[Width];
-                        renderedContents[i][sp] = ' ';
 
                         ConsoleColor chosenColor = TextColor;
 
@@ -135,18 +134,29 @@ namespace ConsolasEngine
 
                         lastRendered.Colors[i][sp] = chosenColor;
                     }
+
+                    // Iterate over each word and fill it in
                     for (int j = 0; j < 2; j++)
                     {
-                        for (int k = 0; k < unrenderedContents[i][j].Length; k++)
+                        if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= Width)
                         {
-                            if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= Width)
-                                throw new UIException("Column length sum exceeded table width");
-                            renderedContents[i][j == 0 ? k : Width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
+                            throw new UIException("Column length sum exceeded table width");
                         }
+
+                        char[] word = unrenderedContents[i][j].ToCharArray();
+
+                        // Start the copy left-bound or fight-bound
+                        int start = 0;
+                        if (j == 1)
+                        {
+                            start = Width - unrenderedContents[i][j].Length;
+                        }
+
+                        Array.Copy(word, 0, lastRendered.Symbols[i], start, word.Length);
                     }
+
                 }
                 hasChanged = false;
-                lastRendered.Symbols = renderedContents;
             }
             return lastRendered;
         }
