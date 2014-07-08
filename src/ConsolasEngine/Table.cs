@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace ConsolasEngine
 {
+    public enum TableMode
+    {
+        NoHeader, LeftHeader, TopHeader
+    }
+
     public class Table : IRenderable
     {
         private string[][] unrenderedContents;
         private Canvas lastRendered;
-        private int height;
-        private int width;
         private bool hasChanged;
         private ConsoleColor? textColor;
         private ConsoleColor? headingColor;
@@ -23,12 +26,14 @@ namespace ConsolasEngine
 
         public int Height
         {
-            get { return height; }
+            get;
+            private set;
         }
 
         public int Width
         {
-            get { return width; }
+            get;
+            private set;
         }
 
         public ConsoleColor TextColor
@@ -43,6 +48,7 @@ namespace ConsolasEngine
                 textColor = value;
             }
         }
+
         public ConsoleColor HeadingColor
         {
             get
@@ -54,6 +60,12 @@ namespace ConsolasEngine
             {
                 headingColor = value;
             }
+        }
+
+        public TableMode TableMode
+        {
+            get;
+            set;
         }
 
         public void nullableSetTextColor(ConsoleColor? value)
@@ -71,13 +83,14 @@ namespace ConsolasEngine
             hasChanged = true;
         }
 
-        public Table(string[][] contents, int lengthSum, ConsoleColor? textColor = null, ConsoleColor? headingColor = null)
+        public Table(string[][] contents, int lengthSum, ConsoleColor? textColor = null, ConsoleColor? headingColor = null, TableMode tableMode = TableMode.NoHeader)
         {
+            this.TableMode = tableMode;
             this.headingColor = headingColor;
             this.textColor = textColor;
-            height = contents.Length;
-            width = lengthSum;
-            lastRendered = new Canvas(height, width);
+            Height = contents.Length;
+            Width = lengthSum;
+            lastRendered = new Canvas(Height, Width);
             Update(contents);
         }
 
@@ -91,24 +104,44 @@ namespace ConsolasEngine
         {
             if (hasChanged)
             {
-                char[][] renderedContents = new char[height][];
-                for (int i = 0; i < height; i++)
+                char[][] renderedContents = new char[Height][];
+                for (int i = 0; i < Height; i++)
                 {
-                    for (int sp = 0; sp < width; sp++)
+                    for (int sp = 0; sp < Width; sp++)
                     {
-                        renderedContents[i] = new char[width];
+                        renderedContents[i] = new char[Width];
                         renderedContents[i][sp] = ' ';
-                        lastRendered.Colors[i][sp] = i == 0 ?
-                            HeadingColor :
-                            TextColor;
+
+                        ConsoleColor chosenColor = TextColor;
+
+                        switch (this.TableMode)
+                        {
+                            case TableMode.NoHeader:
+                                chosenColor = TextColor;
+                                break;
+
+                            case TableMode.LeftHeader:
+                                chosenColor = sp < unrenderedContents[i][0].Length ?
+                                    HeadingColor :
+                                    TextColor;
+                                break;
+
+                            case TableMode.TopHeader:
+                                chosenColor = i == 0 ?
+                                    HeadingColor :
+                                    TextColor;
+                                break;
+                        }
+
+                        lastRendered.Colors[i][sp] = chosenColor;
                     }
                     for (int j = 0; j < 2; j++)
                     {
                         for (int k = 0; k < unrenderedContents[i][j].Length; k++)
                         {
-                            if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= width)
+                            if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= Width)
                                 throw new UIException("Column length sum exceeded table width");
-                            renderedContents[i][j == 0 ? k : width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
+                            renderedContents[i][j == 0 ? k : Width - unrenderedContents[i][j].Length + k] = unrenderedContents[i][j].ToCharArray()[k];
                         }
                     }
                 }

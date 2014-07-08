@@ -30,7 +30,7 @@ namespace ConsolasEngineTests
                 new string[] {"Staerke", "0"},
                 new string[] {"Agilitaet", "00"},
                 new string[] {"Intelligenz", "000"},
-                new string[] {"Level", "0000"}}, 30);
+                new string[] {"Level", "0000"}}, 30, null, ConsoleColor.Red, TableMode.LeftHeader);
 
             ThirdElement = new Table(new string[][] {new string[] {
                 "Name", "Gegner sind OP"},
@@ -38,7 +38,7 @@ namespace ConsolasEngineTests
                 new string[] {"Staerke", "9002"},
                 new string[] {"Agilitaet", "9002"},
                 new string[] {"Intelligenz", "9002"},
-                new string[] {"Level", "9002"}}, 61);
+                new string[] {"Level", "9002"}}, 61, null, ConsoleColor.Red, TableMode.TopHeader);
 
             currentElement = new UIScene(new IRenderable[] { myElement, myOtherElement, ThirdElement },
                 new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 } },
