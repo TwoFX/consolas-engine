@@ -11,7 +11,7 @@ namespace FireworkEngine
     {
         private class Switch
         {
-            public int Length
+            public string Text
             {
                 get;
                 set;
@@ -25,8 +25,8 @@ namespace FireworkEngine
         }
 
         static private UIScene currentElement;
-        static private char[][] symbols;
-        static List<List<Switch>> switches;
+        static private Canvas rendered;
+        static private List<List<Switch>> switches;
         static private bool isInitialized = false;
 
         public static ConsoleColor DefaultColor
@@ -37,6 +37,7 @@ namespace FireworkEngine
 
         public static void Initialize(ConsoleColor defaultColor = ConsoleColor.Gray)
         {
+            switches = new List<List<Switch>>();
             DefaultColor = defaultColor;
             isInitialized = true;
         }
@@ -69,23 +70,21 @@ namespace FireworkEngine
                 throw new InvalidOperationException("UIManager has to be initialized");
             }
 
-            Canvas rendered = currentElement.Render();
-            symbols = rendered.Symbols;
-            switches = processSwitches(rendered.Colors);
+            rendered = currentElement.Render();
+            processSwitches();
         }
 
         // Creates a collection that keeps track of when to switch colors
-        private static List<List<Switch>> processSwitches(ConsoleColor[][] map)
+        private static void processSwitches()
         {
-            var sw = new List<List<Switch>>();
-            foreach (ConsoleColor[] line in map)
+            switches.Clear();
+            for (int i = 0; i < rendered.Height; i++)
             {
-                sw.Add(processLine(line));
+                switches.Add(processLine(rendered.Colors[i], rendered.Symbols[i]));
             }
-            return sw;
         }
 
-        private static List<Switch> processLine(ConsoleColor[] line)
+        private static List<Switch> processLine(ConsoleColor[] line, char[] text)
         {
             List<Switch> res = new List<Switch>();
 
@@ -100,7 +99,10 @@ namespace FireworkEngine
                 // Check how long the same color is used
                 int length = line.Skip(at).TakeWhile(c => c == current).Count();
 
-                res.Add(new Switch { Length = length, Color = current });
+                char[] rText = new char[length];
+                Array.Copy(text, at, rText, 0, length);
+
+                res.Add(new Switch { Text = new string(rText), Color = current });
 
                 // Skip forward
                 at += length;
@@ -120,12 +122,10 @@ namespace FireworkEngine
                     Console.ForegroundColor = sw.Color;
 
                     // Get the string to draw
-                    char[] text = new char[sw.Length];
-                    Array.Copy(symbols[i], at, text, 0, sw.Length);
-                    Console.Write(text);
+                    Console.Write(sw.Text);
 
                     // Skip forward
-                    at += sw.Length;
+                    at += sw.Text.Length;
                 }
                 Console.WriteLine();
             }
