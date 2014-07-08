@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2013 for Windows Desktop
 VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireworkEngine", "ConsolasEngine\FireworkEngine.csproj", "{8451B588-67E8-4C26-92D0-4F50F0653021}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireworkEngine", "FireworkEngine\FireworkEngine.csproj", "{8451B588-67E8-4C26-92D0-4F50F0653021}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireworkEngineTests", "ConsolasEngineTests\FireworkEngineTests.csproj", "{241001AA-69B5-45D9-B387-6F22F3BD3E32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireworkEngineTests", "FireworkEngineTests\FireworkEngineTests.csproj", "{241001AA-69B5-45D9-B387-6F22F3BD3E32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

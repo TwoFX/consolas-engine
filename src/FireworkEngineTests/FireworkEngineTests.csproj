@@ -48,7 +48,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsolasEngine\FireworkEngine.csproj">
+    <ProjectReference Include="..\FireworkEngine\FireworkEngine.csproj">
       <Project>{8451b588-67e8-4c26-92d0-4f50f0653021}</Project>
       <Name>FireworkEngine</Name>
     </ProjectReference>
