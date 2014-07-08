@@ -7,7 +7,7 @@
     <ProjectGuid>{8451B588-67E8-4C26-92D0-4F50F0653021}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsolasEngine</RootNamespace>
+    <RootNamespace>FireworkEngine</RootNamespace>
     <AssemblyName>ConsolasEngine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

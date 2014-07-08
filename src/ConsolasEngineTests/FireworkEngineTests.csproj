@@ -48,9 +48,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsolasEngine\ConsolasEngine.csproj">
+    <ProjectReference Include="..\ConsolasEngine\FireworkEngine.csproj">
       <Project>{8451b588-67e8-4c26-92d0-4f50f0653021}</Project>
-      <Name>ConsolasEngine</Name>
+      <Name>FireworkEngine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
