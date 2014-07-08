@@ -9,9 +9,24 @@ namespace FireworkEngine
 {
     public static class UIManager
     {
+        private class Switch
+        {
+            public int Length
+            {
+                get;
+                set;
+            }
+
+            public ConsoleColor Color
+            {
+                get;
+                set;
+            }
+        }
+
         static private UIScene currentElement;
         static private char[][] symbols;
-        static private ArrayList[] switches;
+        static List<List<Switch>> switches;
         static private bool isInitialized = false;
 
         public static ConsoleColor DefaultColor
@@ -50,46 +65,67 @@ namespace FireworkEngine
         public static void Render()
         {
             if (!isInitialized)
+            {
                 throw new InvalidOperationException("UIManager has to be initialized");
+            }
 
             Canvas rendered = currentElement.Render();
             symbols = rendered.Symbols;
             switches = processSwitches(rendered.Colors);
         }
 
-        private static ArrayList[] processSwitches(ConsoleColor[][] map)
+        // Creates a collection that keeps track of when to switch colors
+        private static List<List<Switch>> processSwitches(ConsoleColor[][] map)
         {
-            var sw = new ArrayList[map.Length];
-            for (int line = 0; line < map.Length; line++)
+            var sw = new List<List<Switch>>();
+            foreach (ConsoleColor[] line in map)
             {
-                sw[line] = new ArrayList();
-                IEnumerable<ConsoleColor> working = map[line];
-                int sCount = map[line].Length;
-                while (working.Any())
-                {
-                    int atIndex = sCount - working.Count();
-                    sw[line].Add(atIndex);
-                    sw[line].Add(map[line][atIndex]);
-                    working = working.SkipWhile(clr => clr == map[line][atIndex]);
-                }
-                sw[line].Add(map[line].Length);
+                sw.Add(processLine(line));
             }
             return sw;
+        }
+
+        private static List<Switch> processLine(ConsoleColor[] line)
+        {
+            List<Switch> res = new List<Switch>();
+
+            // current values
+            int at = 0;
+            ConsoleColor current;
+
+            while (at < line.Length)
+            {
+                current = line[at];
+
+                // Check how long the same color is used
+                int length = line.Skip(at).TakeWhile(c => c == current).Count();
+
+                res.Add(new Switch { Length = length, Color = current });
+
+                // Skip forward
+                at += length;
+            }
+            return res;
         }
 
         public static void DrawFrame()
         {
             Console.Clear();
-            for (int line = 0; line < currentElement.Height; line++)
+            for (int i = 0; i < switches.Count; i++)
             {
-                for (int ind = 0; ind < switches[line].Count - 1; ind += 2)
+                int at = 0;
+                foreach (Switch sw in switches[i])
                 {
-                    Console.ForegroundColor = (ConsoleColor)switches[line][ind + 1];
-                    int start = (int)switches[line][ind];
-                    int end = (int)switches[line][ind + 2];
-                    char[] p = new char[end - start];
-                    Array.Copy(symbols[line], start, p, 0, end - start);
-                    Console.Write(p);
+                    // Set color
+                    Console.ForegroundColor = sw.Color;
+
+                    // Get the string to draw
+                    char[] text = new char[sw.Length];
+                    Array.Copy(symbols[i], at, text, 0, sw.Length);
+                    Console.Write(text);
+
+                    // Skip forward
+                    at += sw.Length;
                 }
                 Console.WriteLine();
             }
