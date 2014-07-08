@@ -7,8 +7,8 @@
     <ProjectGuid>{241001AA-69B5-45D9-B387-6F22F3BD3E32}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsolasEngineTests</RootNamespace>
-    <AssemblyName>ConsolasEngineTests</AssemblyName>
+    <RootNamespace>FireworkEngineTests</RootNamespace>
+    <AssemblyName>FireworkEngineTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FireworkEngine;
 
-namespace ConsolasEngineTests
+namespace FireworkEngineTests
 {
     class Program
     {
