@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FW = FireworkEngine;
 using FireworkEngine;
 
 namespace FireworkEngineTests
@@ -11,8 +12,14 @@ namespace FireworkEngineTests
     {
         static void Main(string[] args)
         {
+            MainTest();
+        }
+
+        static void MainTest()
+        {
             UIScene currentElement;
             Table myElement, myOtherElement, ThirdElement;
+            FW.Buffer buffer;
 
             UIManager.Initialize(ConsoleColor.White);
 
@@ -22,7 +29,7 @@ namespace FireworkEngineTests
                 new string[] {"Staerke", "9001"},
                 new string[] {"Agilitaet", "9001"},
                 new string[] {"Intelligenz", "asdasdasdasdasd"},
-                new string[] {"Level", "9001"}}, 30, null, ConsoleColor.Red);
+                new string[] {"Level", "9001"}}, 30, null, ConsoleColor.Red, TableMode.LeftHeader);
 
             myOtherElement = new Table(new string[][] { // So sieht der Quellcode aus
                 new string[] {"Name", "Lukas"},
@@ -54,6 +61,18 @@ namespace FireworkEngineTests
             currentElement = new UIScene(new IRenderable[] { myOtherElement, myElement, ThirdElement },
                 new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 } },
                 new string[] { "Spieler 1", "Spieler 2", "OMG Gegner" }, 15, 63, ConsoleColor.Green, null);
+
+
+
+            UIManager.setScene(currentElement);
+
+            UIManager.Render();
+            UIManager.DrawFrame();
+
+            Console.ReadKey();
+
+            buffer = new FW.Buffer(myElement, new FireworkEngine.Margin { Top = 1, Left = 6, Bottom = 5, Right = 7 }, 'l');
+            currentElement = new UIScene(new[] { buffer }, new[] { new[] { 1, 1 } }, new[] { "T" }, 14, 45);
 
             UIManager.setScene(currentElement);
 

@@ -8,6 +8,7 @@ namespace FireworkEngine
 {
     public class UIScene : IRenderable
     {
+        // TODO: Infer size
         private IRenderable[] unrenderedContents;
         private Canvas lastRendered;
         private int[][] positions;

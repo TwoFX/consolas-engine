@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace FireworkEngine
             T[] r = new T[count];
             for (int i = 0; i < count; i++)
             {
-                r[i] = element;
+                r[i] = element is Array ? (T)(element as Array).Clone() : element;
             }
             return r;
         }
