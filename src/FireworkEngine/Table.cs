@@ -88,7 +88,7 @@ namespace FireworkEngine
                                 break;
 
                             case TableMode.LeftHeader:
-                                chosenColor = sp < unrendered[i][0].Length ?
+                                chosenColor = sp < data[i][0].Length ?
                                     HeadingColor :
                                     TextColor;
                                 break;
@@ -106,18 +106,18 @@ namespace FireworkEngine
                     // Iterate over each word and fill it in
                     for (int j = 0; j < 2; j++)
                     {
-                        if (unrendered[i][0].Length + unrendered[i][1].Length >= Width)
+                        if (data[i][0].Length + data[i][1].Length >= Width)
                         {
                             throw new UIException("Column length sum exceeded table width");
                         }
 
-                        char[] word = unrendered[i][j].ToCharArray();
+                        char[] word = data[i][j].ToCharArray();
 
                         // Start the copy left-bound or fight-bound
                         int start = 0;
                         if (j == 1)
                         {
-                            start = Width - unrendered[i][j].Length;
+                            start = Width - data[i][j].Length;
                         }
 
                         Array.Copy(word, 0, lastRendered.Symbols[i], start, word.Length);

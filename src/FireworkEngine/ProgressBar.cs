@@ -20,7 +20,7 @@ namespace FireworkEngine
         {
             if (hasChanged)
             {
-                int tip = (int)Math.Floor(unrendered * (Width - 2) + 1);
+                int tip = (int)Math.Floor(data * (Width - 2) + 1);
                 lastRendered.Colors[0][0] = UIManager.DefaultColor;
                 lastRendered.Colors[0][Width - 1] = UIManager.DefaultColor;
                 lastRendered.Symbols[0][0] = '[';
@@ -32,7 +32,7 @@ namespace FireworkEngine
                     {
                         lastRendered.Symbols[0][i] = '=';
                     }
-                    else if (unrendered > 0 && i == tip)
+                    else if (data > 0 && i == tip)
                     {
                         lastRendered.Symbols[0][i] = '>';
                     }

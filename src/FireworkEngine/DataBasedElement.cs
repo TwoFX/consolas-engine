@@ -9,7 +9,7 @@ namespace FireworkEngine
     public abstract class DataBasedElement<T> : IRenderable
     {
         protected bool hasChanged;
-        protected T unrendered;
+        protected T data;
         protected Canvas lastRendered;
 
         public bool HasChanged
@@ -31,7 +31,7 @@ namespace FireworkEngine
 
         public void Update(T contents)
         {
-            unrendered = contents;
+            data = contents;
             hasChanged = true;
         }
 
