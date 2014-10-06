@@ -22,7 +22,7 @@ namespace FireworkEngineTests
             FW.Buffer buffer;
 
             UIManager.Initialize(ConsoleColor.White);
-
+            
             myElement = new Table(new string[][] {new string[] {
                 "Name", "Markus"},
                 new string[] {"Rasse", "Epische Epischheit"},
@@ -71,8 +71,8 @@ namespace FireworkEngineTests
 
             Console.ReadKey();
 
-            buffer = new FW.Buffer(myElement, new FireworkEngine.Margin { Top = 1, Left = 6, Bottom = 5, Right = 7 }, 'l');
-            currentElement = new UIScene(new[] { buffer }, new[] { new[] { 1, 1 } }, new[] { "T" }, 14, 45);
+            buffer = new FW.Buffer(myElement, new FireworkEngine.Margin { Top = 3, Left = 6, Bottom = 3, Right = 7 }, ' ');
+            currentElement = new UIScene(new[] { buffer }, new[] { new[] { 1, 1 } }, new[] { "Buffer Test" }, 14, 45);
 
             UIManager.setScene(currentElement);
 
