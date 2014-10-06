@@ -20,6 +20,7 @@ namespace FireworkEngineTests
             UIScene currentElement;
             Table myElement, myOtherElement, ThirdElement;
             FW.Buffer buffer;
+            ProgressBar pb;
 
             UIManager.Initialize(ConsoleColor.White);
             
@@ -47,15 +48,34 @@ namespace FireworkEngineTests
                 new string[] {"Intelligenz", "Really does                   "},
                 new string[] {"Level", "Colorful console game thingy"}}, 61, null, ConsoleColor.Red, TableMode.TopHeader);
 
-            currentElement = new UIScene(new IRenderable[] { myElement, myOtherElement, ThirdElement },
-                new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 } },
-                new string[] { "Spieler 1", "Spieler 2", "OMG Gegner" }, 15, 63, ConsoleColor.Green, null);
+            pb = new ProgressBar(0, 61);
+
+            currentElement = new UIScene(new IRenderable[] { myElement, myOtherElement, ThirdElement, pb },
+                new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 }, new int[] { 15, 1 }},
+                new string[] { "Spieler 1", "Spieler 2", "OMG Gegner", "Progress" }, 17, 63, ConsoleColor.Green, null);
+
+            
 
             UIManager.setScene(currentElement);
 
             UIManager.Render();
             UIManager.DrawFrame();
 
+            Console.ReadKey();
+
+            pb.Update(0.5);
+            UIManager.Render();
+            UIManager.DrawFrame();
+            Console.ReadKey();
+
+            pb.Update(0.3);
+            UIManager.Render();
+            UIManager.DrawFrame();
+            Console.ReadKey();
+
+            pb.Update(1);
+            UIManager.Render();
+            UIManager.DrawFrame();
             Console.ReadKey();
 
             currentElement = new UIScene(new IRenderable[] { myOtherElement, myElement, ThirdElement },
