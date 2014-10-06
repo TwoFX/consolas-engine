@@ -11,31 +11,10 @@ namespace FireworkEngine
         NoHeader, LeftHeader, TopHeader
     }
 
-    public class Table : IRenderable
+    public class Table : DataBasedElement<string[][]>
     {
-        private string[][] unrenderedContents;
-        private Canvas lastRendered;
-        private bool hasChanged;
         private ConsoleColor? textColor;
         private ConsoleColor? headingColor;
-
-        public bool HasChanged
-        {
-            get { return hasChanged; }
-        }
-
-        public int Height
-        {
-            get;
-            private set;
-        }
-
-        public int Width
-        {
-            get;
-            private set;
-        }
-
         public ConsoleColor TextColor
         {
             get
@@ -78,11 +57,6 @@ namespace FireworkEngine
             headingColor = value;
         }
 
-        public void Invalidate()
-        {
-            hasChanged = true;
-        }
-
         public Table(string[][] contents, int lengthSum, ConsoleColor? textColor = null, ConsoleColor? headingColor = null, TableMode tableMode = TableMode.NoHeader)
         {
             this.TableMode = tableMode;
@@ -94,13 +68,7 @@ namespace FireworkEngine
             Update(contents);
         }
 
-        public void Update(string[][] contents)
-        {
-            unrenderedContents = contents;
-            hasChanged = true;
-        }
-
-        public Canvas Render()
+        public override Canvas Render()
         {
             if (hasChanged)
             {
@@ -120,7 +88,7 @@ namespace FireworkEngine
                                 break;
 
                             case TableMode.LeftHeader:
-                                chosenColor = sp < unrenderedContents[i][0].Length ?
+                                chosenColor = sp < unrendered[i][0].Length ?
                                     HeadingColor :
                                     TextColor;
                                 break;
@@ -138,18 +106,18 @@ namespace FireworkEngine
                     // Iterate over each word and fill it in
                     for (int j = 0; j < 2; j++)
                     {
-                        if (unrenderedContents[i][0].Length + unrenderedContents[i][1].Length >= Width)
+                        if (unrendered[i][0].Length + unrendered[i][1].Length >= Width)
                         {
                             throw new UIException("Column length sum exceeded table width");
                         }
 
-                        char[] word = unrenderedContents[i][j].ToCharArray();
+                        char[] word = unrendered[i][j].ToCharArray();
 
                         // Start the copy left-bound or fight-bound
                         int start = 0;
                         if (j == 1)
                         {
-                            start = Width - unrenderedContents[i][j].Length;
+                            start = Width - unrendered[i][j].Length;
                         }
 
                         Array.Copy(word, 0, lastRendered.Symbols[i], start, word.Length);

@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Buffer.cs" />
     <Compile Include="Canvas.cs" />
+    <Compile Include="DataBasedElement.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="Margin.cs" />
