@@ -24,28 +24,28 @@ namespace FireworkEngineTests
             UIManager.Initialize(ConsoleColor.White);
             
             myElement = new Table(new string[][] {new string[] {
-                "Name", "Markus"},
-                new string[] {"Rasse", "Epische Epischheit"},
-                new string[] {"Staerke", "9001"},
-                new string[] {"Agilitaet", "9001"},
-                new string[] {"Intelligenz", "asdasdasdasdasd"},
+                "Left 1", "Right 1"},
+                new string[] {"Left 2", "Right 2"},
+                new string[] {"Left 3", "Right 3 Looong"},
+                new string[] {"Left 444444554545454444", "t"},
+                new string[] {"i", "asdasdasdasdasdasdasdasd"},
                 new string[] {"Level", "9001"}}, 30, null, ConsoleColor.Red, TableMode.LeftHeader);
 
             myOtherElement = new Table(new string[][] { // So sieht der Quellcode aus
-                new string[] {"Name", "Lukas"},
-                new string[] {"Rasse", "Menschendings"},
-                new string[] {"Staerke", "0"},
-                new string[] {"Agilitaet", "00"},
-                new string[] {"Intelligenz", "000"},
-                new string[] {"Level", "0000"}}, 30, null, ConsoleColor.Red, TableMode.LeftHeader);
+                new string[] {"This", "Here"},
+                new string[] {"is", "be"},
+                new string[] {"the", "data"},
+                new string[] {"title", "00"},
+                new string[] {"line", "000"},
+                new string[] {"!", "0000"}}, 30, null, ConsoleColor.Red, TableMode.LeftHeader);
 
             ThirdElement = new Table(new string[][] {new string[] {
-                "Name", "Gegner sind OP"},
-                new string[] {"Rasse", "Winfestor"},
-                new string[] {"Staerke", "9002"},
-                new string[] {"Agilitaet", "9002"},
-                new string[] {"Intelligenz", "9002"},
-                new string[] {"Level", "9002"}}, 61, null, ConsoleColor.Red, TableMode.TopHeader);
+                "Name", "OP"},
+                new string[] {"OP?", "OP"},
+                new string[] {",,,,,,,,", "......"},
+                new string[] {"       Needs trimming", "9002"},
+                new string[] {"Intelligenz", "Really does                   "},
+                new string[] {"Level", "Colorful console game thingy"}}, 61, null, ConsoleColor.Red, TableMode.TopHeader);
 
             currentElement = new UIScene(new IRenderable[] { myElement, myOtherElement, ThirdElement },
                 new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 } },
