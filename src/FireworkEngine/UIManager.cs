@@ -115,7 +115,6 @@ namespace FireworkEngine
             Console.Clear();
             for (int i = 0; i < switches.Count; i++)
             {
-                int at = 0;
                 foreach (Switch sw in switches[i])
                 {
                     // Set color
@@ -123,9 +122,6 @@ namespace FireworkEngine
 
                     // Get the string to draw
                     Console.Write(sw.Text);
-
-                    // Skip forward
-                    at += sw.Text.Length;
                 }
                 Console.WriteLine();
             }
