@@ -34,7 +34,7 @@ namespace FireworkEngine
         {
             get
             {
-                return firstDrawn || Inner.HasChanged;
+                return !firstDrawn || Inner.HasChanged;
             }
         }
 

@@ -41,6 +41,7 @@ namespace FireworkEngine
                         lastRendered.Symbols[0][i] = ' ';
                     }
                 }
+                hasChanged = false;
             }
             return lastRendered;
         }
