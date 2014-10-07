@@ -80,6 +80,11 @@ namespace FireworkEngine
             switches.Clear();
             for (int i = 0; i < rendered.Height; i++)
             {
+                if (switches.Count == 8)
+                {
+                    
+                    Console.Write("");
+                }
                 switches.Add(processLine(rendered.Colors[i], rendered.Symbols[i]));
             }
         }
@@ -97,12 +102,14 @@ namespace FireworkEngine
                 current = line[at];
 
                 // Check how long the same color is used
-                int length = line.Skip(at).TakeWhile(c => c == current).Count();
+                int length = line.Skip(at).TakeWhile((c, i) => c == current || text[i + at] == '\0' || text[i + at] == ' ').Count();
 
                 char[] rText = new char[length];
                 Array.Copy(text, at, rText, 0, length);
 
                 res.Add(new Switch { Text = new string(rText), Color = current });
+
+                
 
                 // Skip forward
                 at += length;

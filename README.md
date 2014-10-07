@@ -9,3 +9,4 @@ Current Todo list:
 * Split the classes into several namespaces (e.g. all UI elements into one namespace)
 * Find a solution for enabling elements to be borderless
 * Infer the size of an UIScene
+* Make sure Render() does not return '\0' at any point

@@ -23,7 +23,7 @@ namespace FireworkEngineTests
             ProgressBar pb;
 
             UIManager.Initialize(ConsoleColor.White);
-            
+
             myElement = new Table(new string[][] {new string[] {
                 "Left 1", "Right 1"},
                 new string[] {"Left 2", "Right 2"},
@@ -51,10 +51,10 @@ namespace FireworkEngineTests
             pb = new ProgressBar(0, 61);
 
             currentElement = new UIScene(new IRenderable[] { myElement, myOtherElement, ThirdElement, pb },
-                new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 }, new int[] { 15, 1 }},
+                new int[][] { new int[] { 1, 1 }, new int[] { 1, 32 }, new int[] { 8, 1 }, new int[] { 15, 1 } },
                 new string[] { "Spieler 1", "Spieler 2", "OMG Gegner", "Progress" }, 17, 63, ConsoleColor.Green, null);
 
-            
+
 
             UIManager.setScene(currentElement);
 
