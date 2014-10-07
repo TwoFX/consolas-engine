@@ -80,11 +80,6 @@ namespace FireworkEngine
             switches.Clear();
             for (int i = 0; i < rendered.Height; i++)
             {
-                if (switches.Count == 8)
-                {
-                    
-                    Console.Write("");
-                }
                 switches.Add(processLine(rendered.Colors[i], rendered.Symbols[i]));
             }
         }
