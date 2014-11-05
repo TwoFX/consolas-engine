@@ -209,7 +209,9 @@ namespace FireworkEngine
 
                 default:
                     // Large intersection
-                    return '0';
+                    return Enumerable.Range(x - 1, 3).All(_x => Enumerable.Range(y - 1, 3).All(_y => 
+                        _x < 0 || _y < 0 || _x >= reference.Length || _y >= reference[_x].Length || reference[_x][_y] == null)) ? ' ' : '0';
+                    //return '0';
             }
         }
     }

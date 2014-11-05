@@ -24,10 +24,11 @@ namespace FireworkEngine
             }
         }
 
-        static private UIScene currentElement;
-        static private Canvas rendered;
-        static private List<List<Switch>> switches;
-        static private bool isInitialized = false;
+        private static UIScene currentElement;
+        private static Canvas rendered;
+        private static List<List<Switch>> switches;
+        private static bool isInitialized = false;
+        private static object _lock;
 
         public static ConsoleColor DefaultColor
         {
@@ -39,6 +40,7 @@ namespace FireworkEngine
         {
             switches = new List<List<Switch>>();
             DefaultColor = defaultColor;
+            _lock = new object();
             isInitialized = true;
         }
 
@@ -54,8 +56,9 @@ namespace FireworkEngine
             }
             Console.WindowWidth = currentElement.Width;
             Console.WindowHeight = currentElement.Height + 1;
-            Console.BufferHeight = currentElement.Height + 1;
-            Console.BufferWidth = currentElement.Width + 1;
+            //Console.BufferHeight = currentElement.Height + 1;
+            //Console.BufferWidth = currentElement.Width + 1;
+            Console.SetBufferSize(currentElement.Width + 1, currentElement.Height + 1);
         }
 
         public static UIScene GetScene()
@@ -69,9 +72,11 @@ namespace FireworkEngine
             {
                 throw new InvalidOperationException("UIManager has to be initialized");
             }
-
-            rendered = currentElement.Render();
-            processSwitches();
+            lock (_lock)
+            {
+                rendered = currentElement.Render();
+                processSwitches();
+            }
         }
 
         // Creates a collection that keeps track of when to switch colors
@@ -114,18 +119,21 @@ namespace FireworkEngine
 
         public static void DrawFrame()
         {
-            Console.Clear();
-            for (int i = 0; i < switches.Count; i++)
+            lock (_lock)
             {
-                foreach (Switch sw in switches[i])
+                Console.Clear();
+                for (int i = 0; i < switches.Count; i++)
                 {
-                    // Set color
-                    Console.ForegroundColor = sw.Color;
+                    foreach (Switch sw in switches[i])
+                    {
+                        // Set color
+                        Console.ForegroundColor = sw.Color;
 
-                    // Get the string to draw
-                    Console.Write(sw.Text);
+                        // Get the string to draw
+                        Console.Write(sw.Text);
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
             }
         }
     }
